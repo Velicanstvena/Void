@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2483487430558059406
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2483487430558059407}
+  - component: {fileID: 1991575017458343876}
+  m_Layer: 0
+  m_Name: ObjectPooler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2483487430558059407
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2483487430558059406}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1991575017458343876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2483487430558059406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fec5738c07f27340aa7dda435182aae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentPos: {fileID: 0}
+  pools:
+  - tag: Glass
+    prefab: {fileID: 5609395121143762882, guid: de0ede3d5374f2d41b4829fc8b2df51f,
+      type: 3}
+    size: 10
+  - tag: Left
+    prefab: {fileID: 9043002835301388638, guid: c5efec85f2284224d906aa0755f063a5,
+      type: 3}
+    size: 10
+  - tag: platform
+    prefab: {fileID: 78523998699395361, guid: 555a38b4e4efeac4680c2d7d6b252a1e, type: 3}
+    size: 10
+  - tag: right
+    prefab: {fileID: 5831777289812361461, guid: c8e6c38d65eb89f41b35d7271866b427,
+      type: 3}
+    size: 10
+  - tag: slime
+    prefab: {fileID: 7801203586355120778, guid: bde05058653001d4384000d18a0815b5,
+      type: 3}
+    size: 10
+  - tag: spikes
+    prefab: {fileID: 4386697059784438515, guid: f597450500166bc46af4f65aa22eb776,
+      type: 3}
+    size: 10
