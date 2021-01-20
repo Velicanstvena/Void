@@ -10,6 +10,7 @@ TagManager:
   - Right
   - Left
   - Glass
+  - Row
   layers:
   - Default
   - TransparentFX

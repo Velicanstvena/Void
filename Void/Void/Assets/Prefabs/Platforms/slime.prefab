@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 114675381001464038}
   m_Layer: 0
   m_Name: slime
-  m_TagString: Untagged
+  m_TagString: Slime
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,10 +152,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7878353193898615800}
   - component: {fileID: 7878353193898615751}
-  - component: {fileID: 7878353193898615750}
   m_Layer: 0
   m_Name: slime
-  m_TagString: Slime
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -222,59 +221,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!60 &7878353193898615750
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7878353193898615801}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.76, y: 1.36}
-    newSize: {x: 2.76, y: 1.36}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.049999997, y: 0.22999999}
-      - {x: 0.19999999, y: -0.08}
-      - {x: 0.32, y: -0.17999999}
-      - {x: 0.48, y: -0.17999999}
-      - {x: 0.59, y: -0.08}
-      - {x: 0.61, y: -0.03}
-      - {x: 0.71, y: 0.21}
-      - {x: 0.96, y: 0.14}
-      - {x: 0.96, y: -0.56}
-      - {x: 1.05, y: -0.68}
-      - {x: 1.28, y: -0.68}
-      - {x: 1.37, y: -0.59999996}
-      - {x: 1.38, y: -0.58}
-      - {x: 1.38, y: 0.58}
-      - {x: 1.37, y: 0.59999996}
-      - {x: 1.29, y: 0.68}
-      - {x: -1.3299999, y: 0.68}
-      - {x: -1.38, y: 0.61}
-      - {x: -1.38, y: -0.34}
-      - {x: -1.26, y: -0.42999998}
-      - {x: -1.04, y: -0.42}
-      - {x: -0.91999996, y: -0.22999999}
-      - {x: -0.96, y: 0.099999994}
-      - {x: -0.69, y: 0.21}
-      - {x: -0.62, y: 0.14}
-      - {x: -0.65, y: -0.57}
-      - {x: -0.52, y: -0.68}
-      - {x: -0.29999998, y: -0.68}
-      - {x: -0.19999999, y: -0.61}
-      - {x: -0.17, y: -0.5}
-      - {x: -0.17, y: 0.099999994}

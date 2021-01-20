@@ -7,14 +7,12 @@ public class SpawnPlatformType : MonoBehaviour
     [SerializeField] GameObject[] platformsToSpawn;
     private ObjectPooler objectPooler;
 
-    // Start is called before the first frame update
     void Start()
     {
         objectPooler = ObjectPooler.Instance;
         StartCoroutine(SpawnPlatform());
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -26,6 +24,7 @@ public class SpawnPlatformType : MonoBehaviour
         {
             //GameObject newPlatform = Instantiate(platformsToSpawn[Random.Range(0, platformsToSpawn.Length)], transform.position, Quaternion.identity);
             GameObject newPlatform = objectPooler.SpawnFromPool(platformsToSpawn[Random.Range(0, platformsToSpawn.Length)].name, transform.position);
+            newPlatform.GetComponent<PlatformMovement>().SetPos(transform.position);
             yield return new WaitForSeconds(5);
         }
     }

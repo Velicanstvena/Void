@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
         }
         */
 
-        CheckIfAbyss();
+        //CheckIfAbyss();
         Swipe();
         if (moves.Count != 0) Move();
     }
@@ -161,20 +161,6 @@ public class PlayerMovement : MonoBehaviour
         {
             Destroy(collision.gameObject);
         }
-
-        if (collision.gameObject.tag == "Spikes")
-        {
-            //Destroy(gameObject);
-            Debug.Log("You are dead!");
-        }
-
-        if (collision.gameObject.tag == "Slime")
-        {
-            cantMove = true;
-            movesBeforeUnstuck = 2;
-        }
-
-        
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -195,6 +181,21 @@ public class PlayerMovement : MonoBehaviour
             {
                 Destroy(collision.gameObject);
             }
+        }
+
+        if (collision.gameObject.tag == "Slime")
+        {
+            if (cantMove == false)
+            {
+                cantMove = true;
+                movesBeforeUnstuck = 2;
+            }
+        }
+
+        if (collision.gameObject.tag == "Spikes")
+        {
+            //Destroy(gameObject);
+            Debug.Log("You are dead!");
         }
     }
 }

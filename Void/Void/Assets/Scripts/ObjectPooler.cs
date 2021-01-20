@@ -55,14 +55,35 @@ public class ObjectPooler : MonoBehaviour
             return null;
         }
 
-        GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+        GameObject objectToSpawn = null;
+        if (poolDictionary[tag].Count > 0)
+        {
+            objectToSpawn = poolDictionary[tag].Dequeue();
+        }
+        // provera ako ne postoji, pravi novi, vraca ga i dodaje ga u pool
+        else
+        {
+            foreach (Pool pool in pools)
+            {
+                if ((pool.tag).Equals(tag))
+                {
+                    objectToSpawn = Instantiate(pool.prefab, this.gameObject.transform);
+                }
+            }
+        }
 
         objectToSpawn.SetActive(true);
         objectToSpawn.transform.position = position;
         objectToSpawn.transform.parent = parentPos.transform;
 
-        poolDictionary[tag].Enqueue(objectToSpawn);
+        //poolDictionary[tag].Enqueue(objectToSpawn);
 
         return objectToSpawn;
+    }
+
+    public void ReturnToPool(string tag, GameObject usedObject)
+    {
+        poolDictionary[tag].Enqueue(usedObject);
+        usedObject.transform.parent = this.gameObject.transform;
     }
 }
