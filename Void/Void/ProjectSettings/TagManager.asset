@@ -11,6 +11,8 @@ TagManager:
   - Left
   - Glass
   - Row
+  - Grass
+  - Bomb
   layers:
   - Default
   - TransparentFX

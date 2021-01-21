@@ -6,81 +6,86 @@ public class PlayerMovement : MonoBehaviour
 {
     private Animator animator;
     private bool isJumping;
+    private Rigidbody2D rb;
+    [SerializeField] private bool jumped = false;
+    [SerializeField] private bool alive = true;
 
-    int movesBeforeUnstuck = 2;
-    bool cantMove;
+    // vars for slime
+    private int movesBeforeUnstuck = 2;
+    private bool cantMove;
 
-    //private Rigidbody2D rb;
+    // vars for MovePlayer
+    private Vector3 rightDiff = new Vector3(3, 0, 0);
+    private Vector3 leftDiff = new Vector3(-3, 0, 0);
+    private Vector3 upDiff = new Vector3(0, 5, 0);
+    private Vector3 downDiff = new Vector3(0, -5, 0);
 
-    // var for swipe
-    Vector2 startPos, currPos;
-    public float swipeRange = 50;
+    // vars for swipe
+    private Vector2 startPos, currPos;
+    private float swipeRange = 50;
 
-    // moves list
-    //List<int> moves;
-    Queue<int> moves;
-
+    // vars for moves queue
+    private Queue<int> moves = new Queue<int>();
     private int previousStep; // za glass platform
+
+    // vars for fall check
+    private float lastPosY = 0f;
+    private float fallDistance = 0f;
+
+    // number of bombs
+    [SerializeField] private int numOfBombs = 0;
+
+    private enum Direction
+    {
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN
+    }
     
     void Start()
     {
-        //rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        moves = new Queue<int>();
+        rb = GetComponent<Rigidbody2D>();
+        StartCoroutine(Move());
     }
 
     
     void Update()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.UpArrow) && !isJumping)
-        {
-            MovePlayer(new Vector3(0, 5, 0));
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) && !isJumping)
-        {
-            MovePlayer(new Vector3(-3, 0, 0));
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) && !isJumping)
-        {
-            MovePlayer(new Vector3(3, 0, 0));
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && !isJumping)
-        {
-            MovePlayer(new Vector3(0, -5, 0));
-        }
-        */
-
         //CheckIfAbyss();
         Swipe();
-        if (moves.Count != 0) Move();
+        CheckFall();
     }
 
-    private void Move()
+    IEnumerator Move()
     {
-        int direction = moves.Dequeue();
-        previousStep = direction;
-        Debug.Log(direction);
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
 
-        // 1 -> move right
-        if (direction == 1)
-        {
-            MovePlayer(new Vector3(3, 0, 0));
-        }
-        // -1 -> move left
-        else if (direction == -1)
-        {
-            MovePlayer(new Vector3(-3, 0, 0));
-        }
-        // 2 -> move up
-        else if (direction == 2)
-        {
-            MovePlayer(new Vector3(0, 5, 0));
-        }
-        // -2 -> move down
-        else if (direction == -2)
-        {
-            MovePlayer(new Vector3(0, -5, 0));
+            if (moves.Count != 0)
+            {
+                int direction = moves.Dequeue();
+                previousStep = direction;
+
+                if (direction == (int)Direction.RIGHT)
+                {
+                    MovePlayer(rightDiff);
+                }
+                else if (direction == (int)Direction.LEFT)
+                {
+                    MovePlayer(leftDiff);
+                }
+                else if (direction == (int)Direction.UP)
+                {
+                    MovePlayer(upDiff);
+                }
+                else if (direction == (int)Direction.DOWN)
+                {
+                    MovePlayer(downDiff);
+                }
+            }
         }
     }
 
@@ -98,33 +103,36 @@ public class PlayerMovement : MonoBehaviour
             currPos = Input.mousePosition;
             Vector2 distance = currPos - startPos;
 
+            // player je na slime platformi
+            if (cantMove && movesBeforeUnstuck != 0)
+            {
+                movesBeforeUnstuck--;
+
+                if (movesBeforeUnstuck == 0)
+                {
+                    cantMove = false;
+                }
+
+                return;
+            }
+
             if (distance.x < -swipeRange)
             {
-                Debug.Log("Left");
-                if (cantMove == false) moves.Enqueue(-1);
-                //MovePlayer(new Vector3(-3, 0, 0));
+                moves.Enqueue((int) Direction.LEFT);
             }
             else if (distance.x > swipeRange)
             {
-                Debug.Log("Right");
-                if (cantMove == false) moves.Enqueue(1);
-                //MovePlayer(new Vector3(3, 0, 0));
+                moves.Enqueue((int) Direction.RIGHT);
             }
             else if (distance.y > swipeRange)
             {
-                Debug.Log("Up");
-                if (cantMove == false) moves.Enqueue(2);
-                //MovePlayer(new Vector3(0, 5, 0));
+                moves.Enqueue((int) Direction.UP);
             }
             else if (distance.y < -swipeRange)
             {
-                Debug.Log("Down");
-                if (cantMove == false) moves.Enqueue(-2);
-                //MovePlayer(new Vector3(0, -5, 0));
+                moves.Enqueue((int) Direction.DOWN);
             }
         }
-
-        // ova provera if (cantMove == false) treba da spreci da se u queue moves doda move ukoliko je player na slime-u
     }
 
     private void CheckIfAbyss()
@@ -137,17 +145,38 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer(Vector3 diff)
     {
+        // provera da player ne ode van scene
         if ((transform.position + diff).x < -0.5 || (transform.position + diff).x > 12.5 || (transform.position + diff).y > 22) return;
-        if (cantMove && movesBeforeUnstuck != 0)
-        {
-            movesBeforeUnstuck--;
-            return;
-        }
+        jumped = true;
         animator.SetTrigger("jump");
         isJumping = true;
         transform.position = transform.position + diff;
+    }
 
-        //rb.MovePosition(transform.position + diff);
+    private void CheckFall()
+    {
+        if (rb.velocity.y < -0.1 && jumped)
+        {
+            if (lastPosY > gameObject.transform.position.y)
+            {
+                fallDistance += lastPosY - gameObject.transform.position.y;
+            }
+
+            lastPosY = gameObject.transform.position.y;
+
+            if (fallDistance >= 10)
+            {
+                Debug.Log("Dead from fall");
+                alive = false;
+            }
+        }
+    }
+
+    private void ResetFallVars()
+    {
+        jumped = false;
+        lastPosY = 0;
+        fallDistance = 0;
     }
 
     public void FinishJump()
@@ -161,26 +190,11 @@ public class PlayerMovement : MonoBehaviour
         {
             Destroy(collision.gameObject);
         }
-    }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Right")
+        if (collision.gameObject.tag == "Bomb")
         {
-            MovePlayer(new Vector3(3, 0, 0));
-        }
-
-        if (collision.gameObject.tag == "Left")
-        {
-            MovePlayer(new Vector3(-3, 0, 0));
-        }
-
-        if (collision.gameObject.tag == "Glass")
-        {
-            if (previousStep == -2)
-            {
-                Destroy(collision.gameObject);
-            }
+            Destroy(collision.gameObject);
+            numOfBombs++;
         }
 
         if (collision.gameObject.tag == "Slime")
@@ -192,10 +206,54 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        if (collision.gameObject.tag == "Grass")
+        {
+            alive = true;
+            Debug.Log("Survived");
+
+            ResetFallVars();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        ResetFallVars();
+
+        if (collision.gameObject.tag == "Right")
+        {
+            MovePlayer(rightDiff);
+        }
+
+        if (collision.gameObject.tag == "Left")
+        {
+            MovePlayer(leftDiff);
+        }
+
+        if (collision.gameObject.tag == "Glass")
+        {
+            if (previousStep == (int) Direction.DOWN)
+            {
+                //collision.gameObject.SetActive(false);
+                collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                collision.gameObject.GetComponent<Collider2D>().enabled = false;
+                StartCoroutine(GlassPlatform(collision.gameObject));
+            }
+        }
+
         if (collision.gameObject.tag == "Spikes")
         {
             //Destroy(gameObject);
             Debug.Log("You are dead!");
         }
+    }
+
+    IEnumerator GlassPlatform(GameObject glassPlatform)
+    {
+        yield return new WaitForSeconds(3f);
+
+        //if (!glassPlatform.active) glassPlatform.SetActive(true);
+
+        glassPlatform.GetComponent<SpriteRenderer>().enabled = true;
+        glassPlatform.GetComponent<Collider2D>().enabled = true;
     }
 }
