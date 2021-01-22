@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2826284783052868376}
   - component: {fileID: 114840718597191242}
   m_Layer: 0
-  m_Name: spikes
+  m_Name: Spikes
   m_TagString: Spikes
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6556a2a02be7d9842b56cdafe7c132fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 7544370849731414023, guid: e1d7a5b43ca81004fa36fea954cd2b32, type: 3}
   endPos: {fileID: 1670170272588135889, guid: e29f690925147b74e8043a5165bb3b7b, type: 3}
   speed: 1
 --- !u!1 &4464849069327550988

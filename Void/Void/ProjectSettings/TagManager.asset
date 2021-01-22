@@ -13,6 +13,7 @@ TagManager:
   - Row
   - Grass
   - Bomb
+  - EnemyBomb
   layers:
   - Default
   - TransparentFX

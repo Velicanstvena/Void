@@ -53,18 +53,29 @@ MonoBehaviour:
     prefab: {fileID: 9043002835301388638, guid: c5efec85f2284224d906aa0755f063a5,
       type: 3}
     size: 10
-  - tag: platform
+  - tag: Normal
     prefab: {fileID: 78523998699395361, guid: 555a38b4e4efeac4680c2d7d6b252a1e, type: 3}
     size: 10
-  - tag: right
+  - tag: Right
     prefab: {fileID: 5831777289812361461, guid: c8e6c38d65eb89f41b35d7271866b427,
       type: 3}
     size: 10
-  - tag: slime
+  - tag: Slime
     prefab: {fileID: 7801203586355120778, guid: bde05058653001d4384000d18a0815b5,
       type: 3}
-    size: 10
-  - tag: spikes
+    size: 1
+  - tag: Spikes
     prefab: {fileID: 4386697059784438515, guid: f597450500166bc46af4f65aa22eb776,
       type: 3}
+    size: 10
+  - tag: Bomb
+    prefab: {fileID: 4549888414542887264, guid: c1ed0174096135b459234b8252b05688,
+      type: 3}
+    size: 5
+  - tag: Grass
+    prefab: {fileID: 5822824592785576949, guid: 29c196c236874b043911256a56130e78,
+      type: 3}
+    size: 10
+  - tag: Emptyplatform
+    prefab: {fileID: 78523998699395361, guid: 8b9b6ac3e1ffbe54086da2919fa597c0, type: 3}
     size: 10

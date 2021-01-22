@@ -34,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
 
     // number of bombs
     [SerializeField] private int numOfBombs = 0;
+    private ObjectPooler objectPooler;
+    private GameObject currentPlatform;
 
     private enum Direction
     {
@@ -47,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        objectPooler = ObjectPooler.Instance;
         StartCoroutine(Move());
     }
 
@@ -56,6 +59,11 @@ public class PlayerMovement : MonoBehaviour
         //CheckIfAbyss();
         Swipe();
         CheckFall();
+
+        if (Input.GetKeyDown(KeyCode.Space) && numOfBombs > 0)
+        {
+            PlaceBomb();
+        }
     }
 
     IEnumerator Move()
@@ -179,6 +187,14 @@ public class PlayerMovement : MonoBehaviour
         fallDistance = 0;
     }
 
+    private void PlaceBomb()
+    {
+        GameObject obj = objectPooler.SpawnFromPool("Bomb", transform.position);
+        obj.transform.parent = currentPlatform.transform;
+        obj.tag = "EnemyBomb";
+        numOfBombs--;
+    }
+
     public void FinishJump()
     {
         isJumping = false;
@@ -206,17 +222,22 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (collision.gameObject.tag == "Grass")
+        if (fallDistance >= 9)
         {
-            alive = true;
-            Debug.Log("Survived");
+            if (collision.gameObject.tag == "Grass")
+            {
+                alive = true;
+                Debug.Log("Survived");
 
-            ResetFallVars();
+                ResetFallVars();
+            }
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        currentPlatform = collision.gameObject;
+
         ResetFallVars();
 
         if (collision.gameObject.tag == "Right")

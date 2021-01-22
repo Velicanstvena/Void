@@ -13,11 +13,6 @@ public class SpawnPlatformType : MonoBehaviour
         StartCoroutine(SpawnPlatform());
     }
 
-    void Update()
-    {
-        
-    }
-
     private IEnumerator SpawnPlatform()
     {
         while (true)
