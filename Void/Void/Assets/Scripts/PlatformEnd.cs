@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlatformEnd : MonoBehaviour
 {
+    [SerializeField] private GameController gameController;
+
     private ObjectPooler objectPooler;
 
     void Start()
@@ -11,25 +13,18 @@ public class PlatformEnd : MonoBehaviour
         objectPooler = ObjectPooler.Instance;
     }
 
-    void Update()
-    {
-        
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag != "Player" && collision.gameObject.transform.parent.tag != "Row")
+        if (collision.gameObject.tag != "Player")
         {
             GameObject usedObject = collision.gameObject;
-
             objectPooler.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
             usedObject.SetActive(false);
-            
         }
 
-        if (collision.gameObject.transform.parent.tag == "Row")
+        if (collision.gameObject.tag == "Player")
         {
-            Destroy(collision.gameObject);
+            gameController.Die();
         }
     }
 }

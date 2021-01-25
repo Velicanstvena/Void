@@ -79,3 +79,7 @@ MonoBehaviour:
   - tag: Emptyplatform
     prefab: {fileID: 78523998699395361, guid: 8b9b6ac3e1ffbe54086da2919fa597c0, type: 3}
     size: 10
+  - tag: Heart
+    prefab: {fileID: 7610462299356880397, guid: 25a4c51026acbe44bad46ce98ff9f64c,
+      type: 3}
+    size: 5

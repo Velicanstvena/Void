@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 754d34086d56bf348b1516f519f66243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameController: {fileID: 0}
 --- !u!50 &677030898
 Rigidbody2D:
   serializedVersion: 4

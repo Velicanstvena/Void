@@ -7,8 +7,8 @@ public class CollectableSpawn : MonoBehaviour
     [SerializeField] GameObject[] collectableToSpawn;
     private ObjectPooler objectPooler;
 
-    private float minSpawnTime = 1f;
-    private float maxSpawnTime = 5f;
+    private float minSpawnTime = 5f;
+    private float maxSpawnTime = 15f;
 
     private bool spawned = false;
 

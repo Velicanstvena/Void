@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 {
     private Animator animator;
     private bool isJumping;
@@ -33,9 +34,15 @@ public class PlayerMovement : MonoBehaviour
     private float fallDistance = 0f;
 
     // number of bombs
-    [SerializeField] private int numOfBombs = 0;
     private ObjectPooler objectPooler;
     private GameObject currentPlatform;
+
+    // multiplayer vars
+    public PhotonView pv;
+    private Vector3 smoothMove;
+
+    // game controller
+    [SerializeField] private GameController gameController;
 
     private enum Direction
     {
@@ -56,14 +63,8 @@ public class PlayerMovement : MonoBehaviour
     
     void Update()
     {
-        //CheckIfAbyss();
         Swipe();
         CheckFall();
-
-        if (Input.GetKeyDown(KeyCode.Space) && numOfBombs > 0)
-        {
-            PlaceBomb();
-        }
     }
 
     IEnumerator Move()
@@ -143,14 +144,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CheckIfAbyss()
-    {
-        if (transform.position.y < -6)
-        {
-            Debug.Log("Dead");
-        }
-    }
-
     private void MovePlayer(Vector3 diff)
     {
         // provera da player ne ode van scene
@@ -172,11 +165,11 @@ public class PlayerMovement : MonoBehaviour
 
             lastPosY = gameObject.transform.position.y;
 
-            if (fallDistance >= 10)
-            {
-                Debug.Log("Dead from fall");
-                alive = false;
-            }
+            //if (fallDistance >= 10)
+            //{
+            //    Debug.Log("Dead from fall");
+            //    alive = false;
+            //}
         }
     }
 
@@ -187,12 +180,12 @@ public class PlayerMovement : MonoBehaviour
         fallDistance = 0;
     }
 
-    private void PlaceBomb()
+    public void PlaceBomb()
     {
         GameObject obj = objectPooler.SpawnFromPool("Bomb", transform.position);
         obj.transform.parent = currentPlatform.transform;
         obj.tag = "EnemyBomb";
-        numOfBombs--;
+        gameController.DecreaseNumberOfBombs();
     }
 
     public void FinishJump()
@@ -204,13 +197,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Heart")
         {
-            Destroy(collision.gameObject);
+            DespawnCollectable(collision);
+            gameController.IncreaseNumberOfHearts();
         }
 
         if (collision.gameObject.tag == "Bomb")
         {
-            Destroy(collision.gameObject);
-            numOfBombs++;
+            DespawnCollectable(collision);
+            gameController.IncreaseNumberOfBombs();
         }
 
         if (collision.gameObject.tag == "Slime")
@@ -226,19 +220,23 @@ public class PlayerMovement : MonoBehaviour
         {
             if (collision.gameObject.tag == "Grass")
             {
-                alive = true;
-                Debug.Log("Survived");
-
+                //alive = true;
+                //Debug.Log("Survived");
                 ResetFallVars();
             }
         }
     }
 
+    private void DespawnCollectable(Collider2D collision)
+    {
+        GameObject usedObject = collision.gameObject;
+        objectPooler.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
+        usedObject.SetActive(false);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         currentPlatform = collision.gameObject;
-
-        ResetFallVars();
 
         if (collision.gameObject.tag == "Right")
         {
@@ -252,9 +250,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.gameObject.tag == "Glass")
         {
-            if (previousStep == (int) Direction.DOWN)
+            if (fallDistance > 1 || previousStep == (int) Direction.DOWN)
             {
-                //collision.gameObject.SetActive(false);
                 collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 collision.gameObject.GetComponent<Collider2D>().enabled = false;
                 StartCoroutine(GlassPlatform(collision.gameObject));
@@ -263,18 +260,35 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.gameObject.tag == "Spikes")
         {
-            //Destroy(gameObject);
-            Debug.Log("You are dead!");
+            gameController.Die();
         }
+
+        if (fallDistance >= 10)
+        {
+            //Debug.Log("Dead from fall");
+            //alive = false;
+            gameController.Die();
+        }
+
+        ResetFallVars();
     }
 
     IEnumerator GlassPlatform(GameObject glassPlatform)
     {
         yield return new WaitForSeconds(3f);
-
-        //if (!glassPlatform.active) glassPlatform.SetActive(true);
-
         glassPlatform.GetComponent<SpriteRenderer>().enabled = true;
         glassPlatform.GetComponent<Collider2D>().enabled = true;
     }
+
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(transform.position);
+    //    }
+    //    else if (stream.IsReading)
+    //    {
+    //        smoothMove = (Vector3) stream.ReceiveNext();
+    //    }
+    //}
 }

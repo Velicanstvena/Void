@@ -13,13 +13,14 @@ GameObject:
   - component: {fileID: 5695060524722605527}
   - component: {fileID: 7544370849731414023}
   - component: {fileID: 212820233}
+  - component: {fileID: 8410530460161293935}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5695060524722605526
 Transform:
   m_ObjectHideFlags: 0
@@ -94,7 +95,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a965fae845936fc4b8888e799ef94f56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swipeRange: 50
+  jumped: 0
+  alive: 1
+  pv: {fileID: 8410530460161293935}
+  gameController: {fileID: 0}
 --- !u!95 &212820233
 Animator:
   serializedVersion: 3
@@ -114,6 +118,29 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8410530460161293935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5695060524722605524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 7544370849731414023}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &5695060526147040767
 GameObject:
   m_ObjectHideFlags: 0

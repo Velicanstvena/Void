@@ -6,6 +6,7 @@ public class SpawnPlatformType : MonoBehaviour
 {
     [SerializeField] GameObject[] platformsToSpawn;
     private ObjectPooler objectPooler;
+    private float spawnTime = 5f;
 
     void Start()
     {
@@ -17,10 +18,9 @@ public class SpawnPlatformType : MonoBehaviour
     {
         while (true)
         {
-            //GameObject newPlatform = Instantiate(platformsToSpawn[Random.Range(0, platformsToSpawn.Length)], transform.position, Quaternion.identity);
             GameObject newPlatform = objectPooler.SpawnFromPool(platformsToSpawn[Random.Range(0, platformsToSpawn.Length)].name, transform.position);
             newPlatform.GetComponent<PlatformMovement>().SetPos(transform.position);
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(spawnTime);
         }
     }
 }
