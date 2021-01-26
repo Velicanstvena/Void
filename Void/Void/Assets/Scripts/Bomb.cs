@@ -7,5 +7,6 @@ public class Bomb : MonoBehaviour
     private void OnDisable()
     {
         gameObject.tag = "Bomb";
+        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
     }
 }

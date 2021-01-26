@@ -96,7 +96,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumped: 0
-  alive: 1
   pv: {fileID: 8410530460161293935}
   gameController: {fileID: 0}
 --- !u!95 &212820233
@@ -136,8 +135,7 @@ MonoBehaviour:
   observableSearch: 2
   Synchronization: 3
   OwnershipTransfer: 0
-  ObservedComponents:
-  - {fileID: 7544370849731414023}
+  ObservedComponents: []
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

@@ -13,6 +13,8 @@ TagManager:
   - Grass
   - Bomb
   - EnemyBomb
+  - ActiveBomb
+  - Radius
   layers:
   - Default
   - TransparentFX

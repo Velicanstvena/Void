@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
     private bool isJumping;
     private Rigidbody2D rb;
     [SerializeField] private bool jumped = false;
-    [SerializeField] private bool alive = true;
+    //[SerializeField] private bool alive = true;
 
     // vars for slime
     private int movesBeforeUnstuck = 2;
@@ -27,19 +27,21 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 
     // vars for moves queue
     private Queue<int> moves = new Queue<int>();
-    private int previousStep; // za glass platform
+    private int previousStep;
 
     // vars for fall check
     private float lastPosY = 0f;
     private float fallDistance = 0f;
 
-    // number of bombs
+    // bombs
     private ObjectPooler objectPooler;
     private GameObject currentPlatform;
+    private Vector2 overlapBoxSize1 = new Vector2(6f, 1f);
+    private Vector2 overlapBoxSize2 = new Vector2(1f, 10f);
+    private Collider2D[] colliders;
 
     // multiplayer vars
     public PhotonView pv;
-    private Vector3 smoothMove;
 
     // game controller
     [SerializeField] private GameController gameController;
@@ -59,7 +61,6 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         objectPooler = ObjectPooler.Instance;
         StartCoroutine(Move());
     }
-
     
     void Update()
     {
@@ -186,6 +187,38 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         obj.transform.parent = currentPlatform.transform;
         obj.tag = "EnemyBomb";
         gameController.DecreaseNumberOfBombs();
+        StartCoroutine(ActivateBomb(obj));
+    }
+
+    IEnumerator ActivateBomb(GameObject activeBomb)
+    {
+        yield return new WaitForSeconds(2f);
+        activeBomb.GetComponent<SpriteRenderer>().color = Color.red;
+        activeBomb.tag = "ActiveBomb";
+    }
+
+    public void BombExplosion()
+    {
+        FindAffectedPlatforms(overlapBoxSize1);
+        FindAffectedPlatforms(overlapBoxSize2);
+        gameController.Die();
+    }
+
+    private void FindAffectedPlatforms(Vector2 boxSize)
+    {
+        colliders = Physics2D.OverlapBoxAll(transform.position, boxSize, 0f);
+
+        if (colliders.Length > 0)
+        {
+            foreach (Collider2D col in colliders)
+            {
+                if (col.tag != "Player" && col.tag != "Slime" && col.tag != "Grass")
+                {
+                    Debug.Log(col.gameObject.name);
+                    DespawnCollectable(col);
+                }
+            }
+        }
     }
 
     public void FinishJump()
@@ -225,6 +258,12 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
                 ResetFallVars();
             }
         }
+
+        if (collision.gameObject.tag == "ActiveBomb")
+        {
+            BombExplosion();
+            DespawnCollectable(collision);
+        }
     }
 
     private void DespawnCollectable(Collider2D collision)
@@ -255,6 +294,7 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
                 collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 collision.gameObject.GetComponent<Collider2D>().enabled = false;
                 StartCoroutine(GlassPlatform(collision.gameObject));
+                return;
             }
         }
 
@@ -265,7 +305,7 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 
         if (fallDistance >= 10)
         {
-            //Debug.Log("Dead from fall");
+            Debug.Log("Dead from fall, fall distance -> " + fallDistance);
             //alive = false;
             gameController.Die();
         }

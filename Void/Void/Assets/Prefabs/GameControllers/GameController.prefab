@@ -43,7 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 869c5b5b3dadaba48b44f0fe5dfbbc92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 5695060524722605524, guid: e1d7a5b43ca81004fa36fea954cd2b32, type: 3}
+  player: {fileID: 0}
+  alive: 1
   numberOfHearts: 0
   numberOfBombs: 0
   winScreen: {fileID: 0}

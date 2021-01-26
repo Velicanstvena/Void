@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private GameObject player;
+    [SerializeField] private bool alive = true;
     [SerializeField] private int numberOfHearts;
     [SerializeField] private int numberOfBombs;
 
@@ -13,6 +14,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject loseScreen;
     [SerializeField] private Text heartsText;
     [SerializeField] private Button placeBombButton;
+   
 
     void Start()
     {
@@ -23,7 +25,7 @@ public class GameController : MonoBehaviour
     {
         heartsText.text = numberOfHearts.ToString();
 
-        if (numberOfBombs > 0)
+        if (numberOfBombs > 0 && alive)
         {
             placeBombButton.gameObject.SetActive(true);
         } 
@@ -67,6 +69,12 @@ public class GameController : MonoBehaviour
     public void Die()
     {
         player.SetActive(false);
+        alive = false;
         ToggleLoseScreen();
+    }
+
+    public bool isAlive()
+    {
+        return alive;
     }
 }

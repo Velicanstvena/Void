@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 9043002835301388637}
   - component: {fileID: 7788922856650655402}
   - component: {fileID: 114594015843393654}
-  - component: {fileID: 114390067060759862}
   m_Layer: 0
   m_Name: Left
   m_TagString: Left
@@ -123,15 +122,3 @@ MonoBehaviour:
   player: {fileID: 7544370849731414023, guid: e1d7a5b43ca81004fa36fea954cd2b32, type: 3}
   endPos: {fileID: 1670170272588135889, guid: e29f690925147b74e8043a5165bb3b7b, type: 3}
   speed: 1
---- !u!114 &114390067060759862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9043002835301388638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: faf3b581c5c8eb04fa6520133fba7b5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
