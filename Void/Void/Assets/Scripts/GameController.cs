@@ -23,12 +23,21 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        heartsText.text = numberOfHearts.ToString();
+        UpdateText();
+        BombButton();
+    }
 
+    private void UpdateText()
+    {
+        heartsText.text = numberOfHearts.ToString();
+    }
+
+    private void BombButton()
+    {
         if (numberOfBombs > 0 && alive)
         {
             placeBombButton.gameObject.SetActive(true);
-        } 
+        }
         else
         {
             placeBombButton.gameObject.SetActive(false);
@@ -39,6 +48,7 @@ public class GameController : MonoBehaviour
     {
         this.numberOfHearts++;
     }
+
     public void IncreaseNumberOfBombs()
     {
         this.numberOfBombs++;

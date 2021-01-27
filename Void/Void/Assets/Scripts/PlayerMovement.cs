@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
     // vars for fall check
     private float lastPosY = 0f;
     private float fallDistance = 0f;
+    private bool broken = false;
 
     // bombs
     private ObjectPooler objectPooler;
@@ -74,7 +75,7 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         {
             yield return new WaitForSeconds(0.1f);
 
-            if (moves.Count != 0)
+            if (moves.Count != 0 && isJumping == false)
             {
                 int direction = moves.Dequeue();
                 previousStep = direction;
@@ -185,7 +186,9 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
     {
         GameObject obj = objectPooler.SpawnFromPool("Bomb", transform.position);
         obj.transform.parent = currentPlatform.transform;
-        obj.tag = "EnemyBomb";
+        //obj.GetComponent<Collider2D>().isTrigger = false;
+        obj.GetComponent<Collider2D>().enabled = false;
+        //obj.tag = "EnemyBomb";
         gameController.DecreaseNumberOfBombs();
         StartCoroutine(ActivateBomb(obj));
     }
@@ -194,28 +197,33 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
     {
         yield return new WaitForSeconds(2f);
         activeBomb.GetComponent<SpriteRenderer>().color = Color.red;
-        activeBomb.tag = "ActiveBomb";
+        yield return new WaitForSeconds(2f);
+        BombExplosion(activeBomb.transform);
+        DespawnCollectable(activeBomb);
+        //activeBomb.tag = "ActiveBomb";
     }
 
-    public void BombExplosion()
+    public void BombExplosion(Transform bombPos)
     {
-        FindAffectedPlatforms(overlapBoxSize1);
-        FindAffectedPlatforms(overlapBoxSize2);
-        gameController.Die();
+        FindAffectedPlatforms(overlapBoxSize1, bombPos);
+        FindAffectedPlatforms(overlapBoxSize2, bombPos);
+        //gameController.Die();
     }
 
-    private void FindAffectedPlatforms(Vector2 boxSize)
+    private void FindAffectedPlatforms(Vector2 boxSize, Transform bombPos)
     {
-        colliders = Physics2D.OverlapBoxAll(transform.position, boxSize, 0f);
+        colliders = Physics2D.OverlapBoxAll(bombPos.position, boxSize, 0f);
 
         if (colliders.Length > 0)
         {
             foreach (Collider2D col in colliders)
             {
-                if (col.tag != "Player" && col.tag != "Slime" && col.tag != "Grass")
+                //if (col.tag != "Player" && col.tag != "Slime" && col.tag != "Grass")
+                if (col.tag == "Player")
                 {
                     Debug.Log(col.gameObject.name);
-                    DespawnCollectable(col);
+                    gameController.Die();
+                    //DespawnCollectable(col);
                 }
             }
         }
@@ -259,11 +267,11 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
             }
         }
 
-        if (collision.gameObject.tag == "ActiveBomb")
-        {
-            BombExplosion();
-            DespawnCollectable(collision);
-        }
+        //if (collision.gameObject.tag == "ActiveBomb")
+        //{
+        //    BombExplosion();
+        //    DespawnCollectable(collision);
+        //}
     }
 
     private void DespawnCollectable(Collider2D collision)
@@ -273,19 +281,18 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         usedObject.SetActive(false);
     }
 
+    private void DespawnCollectable(GameObject usedObject)
+    {
+        objectPooler.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
+        usedObject.SetActive(false);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         currentPlatform = collision.gameObject;
+        FinishJump();
 
-        if (collision.gameObject.tag == "Right")
-        {
-            MovePlayer(rightDiff);
-        }
-
-        if (collision.gameObject.tag == "Left")
-        {
-            MovePlayer(leftDiff);
-        }
+        if (fallDistance != 0) Debug.Log("Fall distance -> " + fallDistance);
 
         if (collision.gameObject.tag == "Glass")
         {
@@ -294,6 +301,7 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
                 collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 collision.gameObject.GetComponent<Collider2D>().enabled = false;
                 StartCoroutine(GlassPlatform(collision.gameObject));
+                broken = true;
                 return;
             }
         }
@@ -303,11 +311,26 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
             gameController.Die();
         }
 
+        if (broken && fallDistance > 4)
+        {
+            gameController.Die();
+            broken = false;
+        }
+
         if (fallDistance >= 10)
         {
-            Debug.Log("Dead from fall, fall distance -> " + fallDistance);
             //alive = false;
             gameController.Die();
+        }
+
+        if (collision.gameObject.tag == "Right")
+        {
+            MovePlayer(rightDiff);
+        }
+
+        if (collision.gameObject.tag == "Left")
+        {
+            MovePlayer(leftDiff);
         }
 
         ResetFallVars();
