@@ -50,4 +50,5 @@ MonoBehaviour:
   winScreen: {fileID: 0}
   loseScreen: {fileID: 0}
   heartsText: {fileID: 0}
+  bombsText: {fileID: 0}
   placeBombButton: {fileID: 0}

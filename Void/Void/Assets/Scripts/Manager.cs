@@ -17,7 +17,7 @@ public class Manager : MonoBehaviour
         }
         else if (PhotonNetwork.CountOfPlayers == 2)
         {
-            PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(3f, 0f, 0f), playerPrefab.transform.rotation);
+            PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(6f, 0f, 0f), playerPrefab.transform.rotation);
         }
     }
 

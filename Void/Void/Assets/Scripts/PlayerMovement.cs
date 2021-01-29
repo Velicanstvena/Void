@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviourPun, IPunObservable
 {
@@ -36,7 +37,6 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
     private bool broken = false;
 
     // bombs
-    //private ObjectPooler objectPooler;
     private GameObject currentPlatform;
     private Vector2 overlapBoxSize1 = new Vector2(6f, 1f);
     private Vector2 overlapBoxSize2 = new Vector2(1f, 10f);
@@ -61,7 +61,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
     
     void Start()
     {
-        if (photonView.IsMine)
+        if (pv.IsMine)
         {
             gameController = FindObjectOfType<GameController>();
             animator = GetComponent<Animator>();
@@ -72,15 +72,20 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
     
     void Update()
     {
-        if (photonView.IsMine)
+        //Swipe();
+        //CheckFall();
+
+        if (pv.IsMine)
         {
             Swipe();
             CheckFall();
+            BombButton();
         }
         else
         {
             SmoothMovement();
         }
+
     }
 
     IEnumerator Move()
@@ -188,15 +193,20 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         jumped = false;
         lastPosY = 0;
         fallDistance = 0;
+        Debug.Log("Reseted fall vars");
     }
 
     public void PlaceBomb()
     {
-        GameObject obj = ObjectPooler.Instance.SpawnFromPool("Bomb", transform.position);
-        obj.transform.parent = currentPlatform.transform;
-        obj.GetComponent<Collider2D>().enabled = false;
-        gameController.DecreaseNumberOfBombs();
-        StartCoroutine(ActivateBomb(obj));
+        if (pv.IsMine)
+        {
+            GameObject obj = ObjectPooler.Instance.SpawnFromPool("Bomb", transform.position);
+            obj.transform.parent = currentPlatform.transform;
+            obj.GetComponent<Collider2D>().enabled = false;
+            gameController.DecreaseNumberOfBombs();
+            pv.RPC("OnCollectablePlaced", RpcTarget.Others, currentPlatform.transform.position);
+            StartCoroutine(ActivateBomb(obj));
+        }
     }
 
     IEnumerator ActivateBomb(GameObject activeBomb)
@@ -210,8 +220,11 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
 
     public void BombExplosion(Transform bombPos)
     {
-        FindAffectedPlatforms(overlapBoxSize1, bombPos);
-        FindAffectedPlatforms(overlapBoxSize2, bombPos);
+        if (pv.IsMine)
+        {
+            FindAffectedPlatforms(overlapBoxSize1, bombPos);
+            FindAffectedPlatforms(overlapBoxSize2, bombPos);
+        }
     }
 
     private void FindAffectedPlatforms(Vector2 boxSize, Transform bombPos)
@@ -222,11 +235,15 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         {
             foreach (Collider2D col in colliders)
             {
-                if (col.tag == "Player")
-                {
-                    Debug.Log(col.gameObject.name);
-                    gameController.Die();
-                }
+                //if (pv.IsMine)
+                //{
+                    if (col.tag == "Player")
+                    {
+                        Debug.Log(col.gameObject.name);
+                        gameController.Die();
+                    }
+                //}
+                
             }
         }
     }
@@ -238,16 +255,23 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!pv.IsMine)
+        {
+            return;
+        }
+
         if (collision.gameObject.tag == "Heart")
         {
             DespawnCollectable(collision);
             gameController.IncreaseNumberOfHearts();
+            pv.RPC("OnCollectablePicked", RpcTarget.Others, "Heart", collision.gameObject.transform.position);
         }
 
         if (collision.gameObject.tag == "Bomb")
         {
             DespawnCollectable(collision);
             gameController.IncreaseNumberOfBombs();
+            pv.RPC("OnCollectablePicked", RpcTarget.Others, "Bomb", collision.gameObject.transform.position);
         }
 
         if (collision.gameObject.tag == "Slime")
@@ -259,13 +283,45 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
             }
         }
 
-        if (fallDistance >= 9)
+        //if (fallDistance >= 9)
+        //{
+        if (collision.gameObject.tag == "Grass")
         {
-            if (collision.gameObject.tag == "Grass")
+            ResetFallVars();
+        }
+        //}
+        
+    }
+
+    [PunRPC]
+    void OnCollectablePicked(string objectName, Vector3 objectPos)
+    {
+        GameObject[] gmts = GameObject.FindGameObjectsWithTag(objectName);
+        foreach (var gm in gmts)
+        {
+            if (gm.transform.position == objectPos)
             {
-                ResetFallVars();
+                DespawnCollectable(gm);
             }
         }
+    }
+
+    [PunRPC]
+    void OnCollectablePlaced(Vector3 currPlatPos)
+    {
+        GameObject obj = ObjectPooler.Instance.SpawnFromPool("Bomb", currPlatPos);
+        GameObject parent = null;
+        GameObject[] objs = FindObjectsOfType<GameObject>();
+        foreach (var o in objs)
+        {
+            if (o.transform.position == currPlatPos)
+            {
+                parent = o;
+            }
+        }
+        obj.transform.parent = parent.transform;
+        obj.GetComponent<Collider2D>().enabled = false;
+        StartCoroutine(ActivateBomb(obj));
     }
 
     private void DespawnCollectable(Collider2D collision)
@@ -283,8 +339,15 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!pv.IsMine)
+        {
+            return;
+        }
+
         currentPlatform = collision.gameObject;
         FinishJump();
+
+        //if (fallDistance != 0) Debug.Log("Fall distance -> " + fallDistance);
 
         if (collision.gameObject.tag == "Glass")
         {
@@ -307,6 +370,11 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         {
             gameController.Die();
             broken = false;
+        }
+
+        if (fallDistance > 3 && previousStep == (int)Direction.DOWN)
+        {
+            gameController.Die();
         }
 
         if (fallDistance >= 10)
@@ -348,7 +416,23 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
 
     private void SmoothMovement()
     {
-        transform.position = Vector3.Lerp(transform.position, smoothMove, Time.deltaTime * 100);
-        //transform.position = transform.position + smoothMove;
+        transform.position = Vector3.Lerp(transform.position, smoothMove, Time.deltaTime * 20);
+    }
+
+    private void BombButton()
+    {
+        if (gameController.GetNumberOfBombs() > 0 && gameController.isAlive())
+        {
+            //placeBombButton.gameObject.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                PlaceBomb();
+            }
+        }
+        else
+        {
+            //placeBombButton.gameObject.SetActive(false);
+            Debug.Log("Bomb is not placed");
+        }
     }
 }

@@ -13,36 +13,41 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject winScreen;
     [SerializeField] private GameObject loseScreen;
     [SerializeField] private Text heartsText;
-    [SerializeField] private Button placeBombButton;
+    [SerializeField] private Text bombsText;
+    //[SerializeField] private Button placeBombButton;
    
 
     void Start()
     {
-
+        if (!player.activeSelf)
+        {
+            player.SetActive(true);
+        }
     }
 
     void Update()
     {
         UpdateText();
-        BombButton();
+        //BombButton();
     }
 
     private void UpdateText()
     {
         heartsText.text = numberOfHearts.ToString();
+        bombsText.text = numberOfBombs.ToString();
     }
 
-    private void BombButton()
-    {
-        if (numberOfBombs > 0 && alive)
-        {
-            placeBombButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            placeBombButton.gameObject.SetActive(false);
-        }
-    }
+    //private void BombButton()
+    //{
+    //    if (numberOfBombs > 0 && alive)
+    //    {
+    //        placeBombButton.gameObject.SetActive(true);
+    //    }
+    //    else
+    //    {
+    //        placeBombButton.gameObject.SetActive(false);
+    //    }
+    //}
 
     public void IncreaseNumberOfHearts()
     {
