@@ -1,11 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CollectableSpawn : MonoBehaviour
 {
     [SerializeField] GameObject[] collectableToSpawn;
-    private ObjectPooler objectPooler;
 
     private float minSpawnTime = 1f;
     private float maxSpawnTime = 5f;
@@ -14,7 +12,6 @@ public class CollectableSpawn : MonoBehaviour
 
     void Start()
     {
-        objectPooler = ObjectPooler.Instance;
         StartCoroutine(SpawnCollectables());
     }
 
@@ -23,11 +20,10 @@ public class CollectableSpawn : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(Random.Range(minSpawnTime, maxSpawnTime));
-            GameObject newCollectable;
 
             if (!spawned)
             {
-                newCollectable = objectPooler.SpawnFromPool(collectableToSpawn[Random.Range(0, collectableToSpawn.Length)].name, transform.position);
+                GameObject newCollectable = ObjectPooler.Instance.SpawnFromPool(collectableToSpawn[Random.Range(0, collectableToSpawn.Length)].name, transform.position);
                 newCollectable.transform.parent = gameObject.transform;
                 spawned = true;
             }

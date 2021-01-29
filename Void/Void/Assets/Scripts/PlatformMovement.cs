@@ -8,11 +8,9 @@ public class PlatformMovement : MonoBehaviour
     [SerializeField] GameObject endPos;
     [SerializeField] float speed;
     private Vector3 endPosY;
-    private ObjectPooler objectPooler;
 
     void Start()
     {
-        objectPooler = ObjectPooler.Instance;
         endPosY = new Vector3(transform.position.x, endPos.transform.position.y);
     }
 

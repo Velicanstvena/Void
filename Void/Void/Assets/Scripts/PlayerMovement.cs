@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerMovement : MonoBehaviourPun//, IPunObservable
+public class PlayerMovement : MonoBehaviourPun, IPunObservable
 {
+    #region Variables
+
     private Animator animator;
     private bool isJumping;
     private Rigidbody2D rb;
-    [SerializeField] private bool jumped = false;
-    //[SerializeField] private bool alive = true;
+    private bool jumped = false;
 
     // vars for slime
     private int movesBeforeUnstuck = 2;
@@ -35,7 +36,7 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
     private bool broken = false;
 
     // bombs
-    private ObjectPooler objectPooler;
+    //private ObjectPooler objectPooler;
     private GameObject currentPlatform;
     private Vector2 overlapBoxSize1 = new Vector2(6f, 1f);
     private Vector2 overlapBoxSize2 = new Vector2(1f, 10f);
@@ -43,9 +44,12 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 
     // multiplayer vars
     public PhotonView pv;
+    private Vector3 smoothMove;
 
     // game controller
-    [SerializeField] private GameController gameController;
+    private GameController gameController;
+
+    #endregion
 
     private enum Direction
     {
@@ -57,16 +61,26 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
     
     void Start()
     {
-        animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
-        objectPooler = ObjectPooler.Instance;
-        StartCoroutine(Move());
+        if (photonView.IsMine)
+        {
+            gameController = FindObjectOfType<GameController>();
+            animator = GetComponent<Animator>();
+            rb = GetComponent<Rigidbody2D>();
+            StartCoroutine(Move());
+        }
     }
     
     void Update()
     {
-        Swipe();
-        CheckFall();
+        if (photonView.IsMine)
+        {
+            Swipe();
+            CheckFall();
+        }
+        else
+        {
+            SmoothMovement();
+        }
     }
 
     IEnumerator Move()
@@ -166,12 +180,6 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
             }
 
             lastPosY = gameObject.transform.position.y;
-
-            //if (fallDistance >= 10)
-            //{
-            //    Debug.Log("Dead from fall");
-            //    alive = false;
-            //}
         }
     }
 
@@ -184,11 +192,9 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 
     public void PlaceBomb()
     {
-        GameObject obj = objectPooler.SpawnFromPool("Bomb", transform.position);
+        GameObject obj = ObjectPooler.Instance.SpawnFromPool("Bomb", transform.position);
         obj.transform.parent = currentPlatform.transform;
-        //obj.GetComponent<Collider2D>().isTrigger = false;
         obj.GetComponent<Collider2D>().enabled = false;
-        //obj.tag = "EnemyBomb";
         gameController.DecreaseNumberOfBombs();
         StartCoroutine(ActivateBomb(obj));
     }
@@ -200,14 +206,12 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         yield return new WaitForSeconds(2f);
         BombExplosion(activeBomb.transform);
         DespawnCollectable(activeBomb);
-        //activeBomb.tag = "ActiveBomb";
     }
 
     public void BombExplosion(Transform bombPos)
     {
         FindAffectedPlatforms(overlapBoxSize1, bombPos);
         FindAffectedPlatforms(overlapBoxSize2, bombPos);
-        //gameController.Die();
     }
 
     private void FindAffectedPlatforms(Vector2 boxSize, Transform bombPos)
@@ -218,12 +222,10 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         {
             foreach (Collider2D col in colliders)
             {
-                //if (col.tag != "Player" && col.tag != "Slime" && col.tag != "Grass")
                 if (col.tag == "Player")
                 {
                     Debug.Log(col.gameObject.name);
                     gameController.Die();
-                    //DespawnCollectable(col);
                 }
             }
         }
@@ -261,29 +263,21 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         {
             if (collision.gameObject.tag == "Grass")
             {
-                //alive = true;
-                //Debug.Log("Survived");
                 ResetFallVars();
             }
         }
-
-        //if (collision.gameObject.tag == "ActiveBomb")
-        //{
-        //    BombExplosion();
-        //    DespawnCollectable(collision);
-        //}
     }
 
     private void DespawnCollectable(Collider2D collision)
     {
         GameObject usedObject = collision.gameObject;
-        objectPooler.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
+        ObjectPooler.Instance.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
         usedObject.SetActive(false);
     }
 
     private void DespawnCollectable(GameObject usedObject)
     {
-        objectPooler.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
+        ObjectPooler.Instance.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
         usedObject.SetActive(false);
     }
 
@@ -292,11 +286,9 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         currentPlatform = collision.gameObject;
         FinishJump();
 
-        if (fallDistance != 0) Debug.Log("Fall distance -> " + fallDistance);
-
         if (collision.gameObject.tag == "Glass")
         {
-            if (fallDistance > 1 || previousStep == (int) Direction.DOWN)
+            if (fallDistance > 1 || previousStep == (int)Direction.DOWN)
             {
                 collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 collision.gameObject.GetComponent<Collider2D>().enabled = false;
@@ -319,7 +311,6 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
 
         if (fallDistance >= 10)
         {
-            //alive = false;
             gameController.Die();
         }
 
@@ -343,15 +334,21 @@ public class PlayerMovement : MonoBehaviourPun//, IPunObservable
         glassPlatform.GetComponent<Collider2D>().enabled = true;
     }
 
-    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    //{
-    //    if (stream.IsWriting)
-    //    {
-    //        stream.SendNext(transform.position);
-    //    }
-    //    else if (stream.IsReading)
-    //    {
-    //        smoothMove = (Vector3) stream.ReceiveNext();
-    //    }
-    //}
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+        }
+        else if (stream.IsReading)
+        {
+            smoothMove = (Vector3)stream.ReceiveNext();
+        }
+    }
+
+    private void SmoothMovement()
+    {
+        transform.position = Vector3.Lerp(transform.position, smoothMove, Time.deltaTime * 100);
+        //transform.position = transform.position + smoothMove;
+    }
 }

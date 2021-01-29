@@ -6,11 +6,9 @@ public class PlatformEnd : MonoBehaviour
 {
     [SerializeField] private GameController gameController;
 
-    private ObjectPooler objectPooler;
-
     void Start()
     {
-        objectPooler = ObjectPooler.Instance;
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -18,7 +16,7 @@ public class PlatformEnd : MonoBehaviour
         if (collision.gameObject.tag != "Player")
         {
             GameObject usedObject = collision.gameObject;
-            objectPooler.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
+            ObjectPooler.Instance.ReturnToPool(usedObject.name.Replace("(Clone)", ""), usedObject);
             usedObject.SetActive(false);
         }
 
