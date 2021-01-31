@@ -38,12 +38,10 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
 
     // bombs
     private GameObject currentPlatform;
-    private Vector2 overlapBoxSize1 = new Vector2(6f, 1f);
-    private Vector2 overlapBoxSize2 = new Vector2(1f, 10f);
-    private Collider2D[] colliders;
 
     // multiplayer vars
     public PhotonView pv;
+    public static GameObject LocalPlayerInstance;
     private Vector3 smoothMove;
 
     // game controller
@@ -58,7 +56,15 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         UP,
         DOWN
     }
-    
+
+    private void Awake()
+    {
+        if (photonView.IsMine)
+        {
+            PlayerMovement.LocalPlayerInstance = this.gameObject;
+        }
+    }
+
     void Start()
     {
         if (pv.IsMine)
@@ -72,20 +78,21 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
     
     void Update()
     {
-        //Swipe();
-        //CheckFall();
-
         if (pv.IsMine)
         {
             Swipe();
             CheckFall();
             BombButton();
+
+            if (!gameController.IsAlive())
+            {
+                pv.RPC("OnLose", RpcTarget.Others);
+            }
         }
         else
         {
             SmoothMovement();
         }
-
     }
 
     IEnumerator Move()
@@ -193,59 +200,19 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         jumped = false;
         lastPosY = 0;
         fallDistance = 0;
-        Debug.Log("Reseted fall vars");
     }
 
     public void PlaceBomb()
     {
-        if (pv.IsMine)
-        {
+        //if (pv.IsMine)
+        //{
             GameObject obj = ObjectPooler.Instance.SpawnFromPool("Bomb", transform.position);
             obj.transform.parent = currentPlatform.transform;
             obj.GetComponent<Collider2D>().enabled = false;
             gameController.DecreaseNumberOfBombs();
+            obj.GetComponent<Bomb>().isPlaced = true;
             pv.RPC("OnCollectablePlaced", RpcTarget.Others, currentPlatform.transform.position);
-            StartCoroutine(ActivateBomb(obj));
-        }
-    }
-
-    IEnumerator ActivateBomb(GameObject activeBomb)
-    {
-        yield return new WaitForSeconds(2f);
-        activeBomb.GetComponent<SpriteRenderer>().color = Color.red;
-        yield return new WaitForSeconds(2f);
-        BombExplosion(activeBomb.transform);
-        DespawnCollectable(activeBomb);
-    }
-
-    public void BombExplosion(Transform bombPos)
-    {
-        if (pv.IsMine)
-        {
-            FindAffectedPlatforms(overlapBoxSize1, bombPos);
-            FindAffectedPlatforms(overlapBoxSize2, bombPos);
-        }
-    }
-
-    private void FindAffectedPlatforms(Vector2 boxSize, Transform bombPos)
-    {
-        colliders = Physics2D.OverlapBoxAll(bombPos.position, boxSize, 0f);
-
-        if (colliders.Length > 0)
-        {
-            foreach (Collider2D col in colliders)
-            {
-                //if (pv.IsMine)
-                //{
-                    if (col.tag == "Player")
-                    {
-                        Debug.Log(col.gameObject.name);
-                        gameController.Die();
-                    }
-                //}
-                
-            }
-        }
+        //}
     }
 
     public void FinishJump()
@@ -283,14 +250,10 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
             }
         }
 
-        //if (fallDistance >= 9)
-        //{
         if (collision.gameObject.tag == "Grass")
         {
             ResetFallVars();
         }
-        //}
-        
     }
 
     [PunRPC]
@@ -321,7 +284,13 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         }
         obj.transform.parent = parent.transform;
         obj.GetComponent<Collider2D>().enabled = false;
-        StartCoroutine(ActivateBomb(obj));
+        obj.GetComponent<Bomb>().isPlaced = true;
+    }
+
+    [PunRPC]
+    void OnLose()
+    {
+        FindObjectOfType<GameController>().Win();
     }
 
     private void DespawnCollectable(Collider2D collision)
@@ -347,8 +316,6 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         currentPlatform = collision.gameObject;
         FinishJump();
 
-        //if (fallDistance != 0) Debug.Log("Fall distance -> " + fallDistance);
-
         if (collision.gameObject.tag == "Glass")
         {
             if (fallDistance > 1 || previousStep == (int)Direction.DOWN)
@@ -357,6 +324,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
                 collision.gameObject.GetComponent<Collider2D>().enabled = false;
                 StartCoroutine(GlassPlatform(collision.gameObject));
                 broken = true;
+                pv.RPC("OnGlassPlatformBroken", RpcTarget.Others, collision.gameObject.transform.position);
                 return;
             }
         }
@@ -395,6 +363,22 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         ResetFallVars();
     }
 
+    [PunRPC]
+    void OnGlassPlatformBroken(Vector3 platformPos)
+    {
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("Glass");
+        foreach (var o in objs)
+        {
+            if (o.transform.position == platformPos)
+            {
+                o.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                o.gameObject.GetComponent<Collider2D>().enabled = false;
+                StartCoroutine(GlassPlatform(o.gameObject));
+                broken = true;
+            }
+        }
+    }
+
     IEnumerator GlassPlatform(GameObject glassPlatform)
     {
         yield return new WaitForSeconds(3f);
@@ -421,7 +405,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
 
     private void BombButton()
     {
-        if (gameController.GetNumberOfBombs() > 0 && gameController.isAlive())
+        if (gameController.GetNumberOfBombs() > 0 && gameController.IsAlive())
         {
             //placeBombButton.gameObject.SetActive(true);
             if (Input.GetKeyDown(KeyCode.Space))

@@ -16,7 +16,7 @@ public class PlatformMovement : MonoBehaviour
 
     void Update()
     {
-        Move();
+        //Move();
     }
 
     private void Move()

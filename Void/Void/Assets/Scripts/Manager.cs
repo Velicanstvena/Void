@@ -6,6 +6,7 @@ using Photon.Pun;
 public class Manager : MonoBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
+
     private int numberOfPlayers;
     private bool spawned1, spawned2;
 

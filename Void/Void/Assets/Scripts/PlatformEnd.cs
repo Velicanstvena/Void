@@ -20,7 +20,7 @@ public class PlatformEnd : MonoBehaviour
             usedObject.SetActive(false);
         }
 
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player" && PlayerMovement.LocalPlayerInstance == collision.gameObject)
         {
             gameController.Die();
         }

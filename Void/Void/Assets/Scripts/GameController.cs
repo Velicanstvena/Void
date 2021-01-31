@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    [SerializeField] private PlayerMovement player;
     [SerializeField] private bool alive = true;
     [SerializeField] private int numberOfHearts;
     [SerializeField] private int numberOfBombs;
@@ -14,14 +14,14 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject loseScreen;
     [SerializeField] private Text heartsText;
     [SerializeField] private Text bombsText;
-    //[SerializeField] private Button placeBombButton;
+    [SerializeField] public Button placeBombButton;
    
 
     void Start()
     {
-        if (!player.activeSelf)
+        if (!player.gameObject.activeSelf)
         {
-            player.SetActive(true);
+            player.gameObject.SetActive(true);
         }
     }
 
@@ -37,17 +37,17 @@ public class GameController : MonoBehaviour
         bombsText.text = numberOfBombs.ToString();
     }
 
-    //private void BombButton()
-    //{
-    //    if (numberOfBombs > 0 && alive)
-    //    {
-    //        placeBombButton.gameObject.SetActive(true);
-    //    }
-    //    else
-    //    {
-    //        placeBombButton.gameObject.SetActive(false);
-    //    }
-    //}
+    private void BombButton()
+    {
+        if (numberOfBombs > 0 && alive)
+        {
+            placeBombButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            placeBombButton.gameObject.SetActive(false);
+        }
+    }
 
     public void IncreaseNumberOfHearts()
     {
@@ -81,14 +81,19 @@ public class GameController : MonoBehaviour
         loseScreen.SetActive(true);
     }
 
+    public void Win()
+    {
+        ToggleWinScreen();
+    }
+
     public void Die()
     {
-        player.SetActive(false);
+        player.gameObject.SetActive(false);
         alive = false;
         ToggleLoseScreen();
     }
 
-    public bool isAlive()
+    public bool IsAlive()
     {
         return alive;
     }

@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 869c5b5b3dadaba48b44f0fe5dfbbc92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1027979122557172056, guid: 0d8b6f58ae4300044abd46607fa29a58, type: 3}
+  player: {fileID: 1027979122557171996, guid: 0d8b6f58ae4300044abd46607fa29a58, type: 3}
   alive: 1
   numberOfHearts: 0
   numberOfBombs: 0

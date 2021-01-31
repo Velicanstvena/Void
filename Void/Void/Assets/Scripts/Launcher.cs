@@ -48,7 +48,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         print("Room Joined Sucess");
-        PhotonNetwork.LoadLevel(1);
+        //if (PhotonNetwork.CountOfPlayers == 2)
+        //{
+            PhotonNetwork.LoadLevel(1);
+        //}
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
