@@ -45,6 +45,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2678846415752284305}
   - component: {fileID: 2678846415752284306}
+  - component: {fileID: 1941217500540374290}
   m_Layer: 0
   m_Name: Spawn02
   m_TagString: Untagged
@@ -85,6 +86,29 @@ MonoBehaviour:
   - {fileID: 78523998699395361, guid: 555a38b4e4efeac4680c2d7d6b252a1e, type: 3}
   - {fileID: 7801203586355120778, guid: bde05058653001d4384000d18a0815b5, type: 3}
   - {fileID: 4386697059784438515, guid: f597450500166bc46af4f65aa22eb776, type: 3}
+  pv: {fileID: 1941217500540374290}
+--- !u!114 &1941217500540374290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2678846415752284307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &3202660650995388822
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,6 +119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3202660650995388820}
   - component: {fileID: 3202660650995388841}
+  - component: {fileID: 1941217500540374289}
   m_Layer: 0
   m_Name: Spawn03
   m_TagString: Heart
@@ -138,6 +163,29 @@ MonoBehaviour:
   - {fileID: 7801203586355120778, guid: bde05058653001d4384000d18a0815b5, type: 3}
   - {fileID: 4386697059784438515, guid: f597450500166bc46af4f65aa22eb776, type: 3}
   - {fileID: 7610462299356880397, guid: 25a4c51026acbe44bad46ce98ff9f64c, type: 3}
+  pv: {fileID: 1941217500540374289}
+--- !u!114 &1941217500540374289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3202660650995388822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4166032382769879074
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,6 +196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4166032382769879072}
   - component: {fileID: 4166032382769879077}
+  - component: {fileID: 1941217500540374288}
   m_Layer: 0
   m_Name: Spawn04
   m_TagString: Untagged
@@ -188,6 +237,29 @@ MonoBehaviour:
   - {fileID: 7801203586355120778, guid: bde05058653001d4384000d18a0815b5, type: 3}
   - {fileID: 4386697059784438515, guid: f597450500166bc46af4f65aa22eb776, type: 3}
   - {fileID: 5822824592785576949, guid: 29c196c236874b043911256a56130e78, type: 3}
+  pv: {fileID: 1941217500540374288}
+--- !u!114 &1941217500540374288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4166032382769879074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &5322875842795377604
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,6 +270,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5322875842795377606}
   - component: {fileID: 5322875842795377607}
+  - component: {fileID: 1941217500540374287}
   m_Layer: 0
   m_Name: Spawn05
   m_TagString: Untagged
@@ -240,6 +313,29 @@ MonoBehaviour:
   - {fileID: 7801203586355120778, guid: bde05058653001d4384000d18a0815b5, type: 3}
   - {fileID: 4386697059784438515, guid: f597450500166bc46af4f65aa22eb776, type: 3}
   - {fileID: 7610462299356880397, guid: 25a4c51026acbe44bad46ce98ff9f64c, type: 3}
+  pv: {fileID: 1941217500540374287}
+--- !u!114 &1941217500540374287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322875842795377604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &7224867060376676284
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,6 +346,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7224867060376676286}
   - component: {fileID: 7224867060376676287}
+  - component: {fileID: 1941217500540374291}
   m_Layer: 0
   m_Name: Spawn01
   m_TagString: Untagged
@@ -292,3 +389,26 @@ MonoBehaviour:
   - {fileID: 7801203586355120778, guid: bde05058653001d4384000d18a0815b5, type: 3}
   - {fileID: 4386697059784438515, guid: f597450500166bc46af4f65aa22eb776, type: 3}
   - {fileID: 7610462299356880397, guid: 25a4c51026acbe44bad46ce98ff9f64c, type: 3}
+  pv: {fileID: 1941217500540374291}
+--- !u!114 &1941217500540374291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7224867060376676284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

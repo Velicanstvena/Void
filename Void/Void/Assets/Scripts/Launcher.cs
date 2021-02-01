@@ -13,6 +13,11 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] private InputField createRoomInputField;
     [SerializeField] private InputField joinRoomInputField;
 
+    private void Update()
+    {
+        
+    }
+
     public void OnClickConnectButton()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -50,7 +55,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         print("Room Joined Sucess");
         //if (PhotonNetwork.CountOfPlayers == 2)
         //{
-            PhotonNetwork.LoadLevel(1);
+        PhotonNetwork.LoadLevel(1);
         //}
     }
 
