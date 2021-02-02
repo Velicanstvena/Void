@@ -5,13 +5,12 @@ using UnityEngine;
 public class CollectableSpawn : MonoBehaviour
 {
     [SerializeField] GameObject[] collectableToSpawn;
-
+    [SerializeField] GameObject collectableSpawnerPos;
     private float minSpawnTime = 1f;
     private float maxSpawnTime = 5f;
-
     private bool spawned = false;
 
-    public PhotonView pv;
+    [SerializeField] private PhotonView pv;
 
     void Start()
     {
@@ -30,10 +29,10 @@ public class CollectableSpawn : MonoBehaviour
             if (!spawned)
             {
                 string collectableName = collectableToSpawn[Random.Range(0, collectableToSpawn.Length)].name;
-                GameObject newCollectable = ObjectPooler.Instance.SpawnFromPool(collectableName, transform.position);
-                newCollectable.transform.parent = gameObject.transform;
+                GameObject newCollectable = ObjectPooler.Instance.SpawnFromPool(collectableName, collectableSpawnerPos.transform.position);
+                newCollectable.transform.parent = collectableSpawnerPos.transform;
                 spawned = true;
-                pv.RPC("OnCollectableSpawned", RpcTarget.OthersBuffered, collectableName, transform.position);
+                pv.RPC("OnCollectableSpawned", RpcTarget.OthersBuffered, collectableName, collectableSpawnerPos.transform.position);
             }
         }
     }
@@ -42,6 +41,12 @@ public class CollectableSpawn : MonoBehaviour
     void OnCollectableSpawned(string collectableName, Vector3 platformPos)
     {
         GameObject newCollectable = ObjectPooler.Instance.SpawnFromPool(collectableName, platformPos);
-        newCollectable.transform.parent = gameObject.transform;
+        newCollectable.transform.parent = collectableSpawnerPos.transform;
+        spawned = true;
+    }
+
+    public void SetPvId(int viewId)
+    {
+        this.pv.ViewID = viewId;
     }
 }

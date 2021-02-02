@@ -28,7 +28,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
     private float swipeRange = 50;
 
     // vars for moves queue
-    private Queue<int> moves = new Queue<int>();
+    private Queue<int> moves;
     private int previousStep;
 
     // vars for fall check
@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
 
     // bombs
     private GameObject currentPlatform;
+    [SerializeField] private Button placeBombButton;
 
     // multiplayer vars
     public PhotonView pv;
@@ -70,8 +71,11 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         if (pv.IsMine)
         {
             gameController = FindObjectOfType<GameController>();
+            placeBombButton = gameController.GetBombButton();
+            placeBombButton.onClick.AddListener(PlaceBomb);
             animator = GetComponent<Animator>();
             rb = GetComponent<Rigidbody2D>();
+            moves = new Queue<int>();
             StartCoroutine(Move());
         }
     }
@@ -404,20 +408,32 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         transform.position = Vector3.Lerp(transform.position, smoothMove, Time.deltaTime * 20);
     }
 
+    //private void BombButton()
+    //{
+    //    if (gameController.GetNumberOfBombs() > 0 && gameController.IsAlive())
+    //    {
+    //        //placeBombButton.gameObject.SetActive(true);
+    //        if (Input.GetKeyDown(KeyCode.Space))
+    //        {
+    //            PlaceBomb();
+    //        }
+    //    }
+    //    else
+    //    {
+    //        //placeBombButton.gameObject.SetActive(false);
+    //        Debug.Log("Bomb is not placed");
+    //    }
+    //}
+
     private void BombButton()
     {
         if (gameController.GetNumberOfBombs() > 0 && gameController.IsAlive())
         {
-            //placeBombButton.gameObject.SetActive(true);
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                PlaceBomb();
-            }
+            placeBombButton.gameObject.SetActive(true);
         }
         else
         {
-            //placeBombButton.gameObject.SetActive(false);
-            Debug.Log("Bomb is not placed");
+            placeBombButton.gameObject.SetActive(false);
         }
     }
 }

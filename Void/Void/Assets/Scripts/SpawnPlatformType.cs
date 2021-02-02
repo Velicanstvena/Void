@@ -8,7 +8,7 @@ public class SpawnPlatformType : MonoBehaviour
     [SerializeField] GameObject[] platformsToSpawn;
     private float spawnTime = 5f;
 
-    public PhotonView pv;
+    [SerializeField] private PhotonView pv;
 
     void Start()
     {

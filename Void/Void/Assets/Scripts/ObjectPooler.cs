@@ -5,6 +5,7 @@ using UnityEngine;
 public class ObjectPooler : MonoBehaviour
 {
     [SerializeField] GameObject parentPos;
+    private int x = 30;
 
     [System.Serializable]
     public class Pool
@@ -41,6 +42,11 @@ public class ObjectPooler : MonoBehaviour
                 GameObject obj = Instantiate(pool.prefab, this.gameObject.transform);
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
+
+                if (obj.GetComponent<CollectableSpawn>())
+                {
+                    obj.GetComponent<CollectableSpawn>().SetPvId(x++);
+                }
             }
 
             poolDictionary.Add(pool.tag, objectPool);
@@ -60,7 +66,6 @@ public class ObjectPooler : MonoBehaviour
         {
             objectToSpawn = poolDictionary[tag].Dequeue();
         }
-        // provera ako ne postoji, pravi novi, vraca ga i dodaje ga u pool
         else
         {
             foreach (Pool pool in pools)
@@ -68,6 +73,10 @@ public class ObjectPooler : MonoBehaviour
                 if ((pool.tag).Equals(tag))
                 {
                     objectToSpawn = Instantiate(pool.prefab, this.gameObject.transform);
+                    if (objectToSpawn.GetComponent<CollectableSpawn>())
+                    {
+                        objectToSpawn.GetComponent<CollectableSpawn>().SetPvId(x++);
+                    }
                 }
             }
         }

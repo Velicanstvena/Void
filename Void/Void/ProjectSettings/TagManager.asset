@@ -15,6 +15,9 @@ TagManager:
   - EnemyBomb
   - ActiveBomb
   - Radius
+  - CollectableSpawner
+  - Normal
+  - Emptyplatform
   layers:
   - Default
   - TransparentFX

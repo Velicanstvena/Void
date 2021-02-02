@@ -97,4 +97,9 @@ public class GameController : MonoBehaviour
     {
         return alive;
     }
+
+    public Button GetBombButton()
+    {
+        return placeBombButton;
+    }
 }
