@@ -211,7 +211,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
             obj.GetComponent<Collider2D>().enabled = false;
             gameController.DecreaseNumberOfBombs();
             obj.GetComponent<Bomb>().isPlaced = true;
-            pv.RPC("OnCollectablePlaced", RpcTarget.Others, currentPlatform.transform.position);
+            pv.RPC("OnCollectablePlaced", RpcTarget.OthersBuffered, currentPlatform.transform.position);
         //}
     }
 
@@ -231,14 +231,14 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         {
             DespawnCollectable(collision);
             gameController.IncreaseNumberOfHearts();
-            pv.RPC("OnCollectablePicked", RpcTarget.Others, "Heart", collision.gameObject.transform.position);
+            pv.RPC("OnCollectablePicked", RpcTarget.OthersBuffered, "Heart", collision.gameObject.transform.position);
         }
 
         if (collision.gameObject.tag == "Bomb")
         {
             DespawnCollectable(collision);
             gameController.IncreaseNumberOfBombs();
-            pv.RPC("OnCollectablePicked", RpcTarget.Others, "Bomb", collision.gameObject.transform.position);
+            pv.RPC("OnCollectablePicked", RpcTarget.OthersBuffered, "Bomb", collision.gameObject.transform.position);
         }
 
         if (collision.gameObject.tag == "Slime")
@@ -259,12 +259,12 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
     [PunRPC]
     void OnCollectablePicked(string objectName, Vector3 objectPos)
     {
-        GameObject[] gmts = GameObject.FindGameObjectsWithTag(objectName);
-        foreach (var gm in gmts)
+        GameObject[] objects = GameObject.FindGameObjectsWithTag(objectName);
+        foreach (var o in objects)
         {
-            if (gm.transform.position == objectPos)
+            if (Vector2.Distance(objectPos, o.transform.position) < 1f)
             {
-                DespawnCollectable(gm);
+                DespawnCollectable(o);
             }
         }
     }
@@ -277,7 +277,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         GameObject[] objs = FindObjectsOfType<GameObject>();
         foreach (var o in objs)
         {
-            if (o.transform.position == currPlatPos)
+            if (Vector2.Distance(currPlatPos, o.transform.position) < 1f)
             {
                 parent = o;
             }
@@ -324,7 +324,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
                 collision.gameObject.GetComponent<Collider2D>().enabled = false;
                 StartCoroutine(GlassPlatform(collision.gameObject));
                 broken = true;
-                pv.RPC("OnGlassPlatformBroken", RpcTarget.Others, collision.gameObject.transform.position);
+                pv.RPC("OnGlassPlatformBroken", RpcTarget.OthersBuffered, collision.gameObject.transform.position);
                 return;
             }
         }
@@ -369,7 +369,8 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Glass");
         foreach (var o in objs)
         {
-            if (o.transform.position == platformPos)
+            //if (o.transform.position == platformPos)
+            if (Vector2.Distance(platformPos, o.transform.position) < 1f)
             {
                 o.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 o.gameObject.GetComponent<Collider2D>().enabled = false;

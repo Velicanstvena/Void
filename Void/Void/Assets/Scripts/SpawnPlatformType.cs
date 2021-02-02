@@ -17,7 +17,6 @@ public class SpawnPlatformType : MonoBehaviour
             StartCoroutine(SpawnPlatform());
         }
     }
-
    
     private IEnumerator SpawnPlatform()
     {
@@ -30,12 +29,6 @@ public class SpawnPlatformType : MonoBehaviour
             yield return new WaitForSeconds(spawnTime);
         }
     }
-
-    //[PunRPC]
-    //void OnStartSpawning()
-    //{
-    //    StartCoroutine(SpawnPlatform());
-    //}
 
     [PunRPC]
     void OnPlatformSpawned(string platformName, Vector3 spawnerPos)

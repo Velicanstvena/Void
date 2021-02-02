@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuScene.unity
     guid: d6d485583d2121e429212c6ae236d6ff
   - enabled: 1
+    path: Assets/Scenes/WaitingRoomScene.unity
+    guid: 33f62dbcda7b8d84aa6d58228b0e9348
+  - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 2acfab0e6a537704980713e82e564ada
   m_configObjects: {}

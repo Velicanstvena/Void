@@ -7,16 +7,13 @@ public class Manager : MonoBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
 
-    private int numberOfPlayers;
-    private bool spawned1, spawned2;
-
     void Start()
     {
-        if (PhotonNetwork.CountOfPlayers == 1)
+        if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0f, 0f, 0f), playerPrefab.transform.rotation);
         }
-        else if (PhotonNetwork.CountOfPlayers == 2)
+        else if (!PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(6f, 0f, 0f), playerPrefab.transform.rotation);
         }

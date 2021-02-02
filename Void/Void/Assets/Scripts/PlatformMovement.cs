@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlatformMovement : MonoBehaviour
 {
-    [SerializeField] PlayerMovement player;
     [SerializeField] GameObject endPos;
     [SerializeField] float speed;
     private Vector3 endPosY;
@@ -16,7 +15,7 @@ public class PlatformMovement : MonoBehaviour
 
     void Update()
     {
-        //Move();
+        Move();
     }
 
     private void Move()

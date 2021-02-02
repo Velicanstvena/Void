@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5562826278579554609}
   - component: {fileID: 6554463785768101737}
+  - component: {fileID: 6665881165179698036}
   m_Layer: 0
   m_Name: CollectableSpawn
   m_TagString: Untagged
@@ -168,3 +169,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collectableToSpawn:
   - {fileID: 4549888414542887264, guid: c1ed0174096135b459234b8252b05688, type: 3}
+  pv: {fileID: 6665881165179698036}
+--- !u!114 &6665881165179698036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914464184711415521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

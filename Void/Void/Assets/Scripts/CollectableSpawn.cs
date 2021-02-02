@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Photon.Pun;
 using UnityEngine;
 
 public class CollectableSpawn : MonoBehaviour
@@ -10,9 +11,14 @@ public class CollectableSpawn : MonoBehaviour
 
     private bool spawned = false;
 
+    public PhotonView pv;
+
     void Start()
     {
-        StartCoroutine(SpawnCollectables());
+        if (pv.IsMine)
+        {
+            StartCoroutine(SpawnCollectables());
+        }
     }
 
     private IEnumerator SpawnCollectables()
@@ -23,10 +29,19 @@ public class CollectableSpawn : MonoBehaviour
 
             if (!spawned)
             {
-                GameObject newCollectable = ObjectPooler.Instance.SpawnFromPool(collectableToSpawn[Random.Range(0, collectableToSpawn.Length)].name, transform.position);
+                string collectableName = collectableToSpawn[Random.Range(0, collectableToSpawn.Length)].name;
+                GameObject newCollectable = ObjectPooler.Instance.SpawnFromPool(collectableName, transform.position);
                 newCollectable.transform.parent = gameObject.transform;
                 spawned = true;
+                pv.RPC("OnCollectableSpawned", RpcTarget.OthersBuffered, collectableName, transform.position);
             }
         }
+    }
+
+    [PunRPC]
+    void OnCollectableSpawned(string collectableName, Vector3 platformPos)
+    {
+        GameObject newCollectable = ObjectPooler.Instance.SpawnFromPool(collectableName, platformPos);
+        newCollectable.transform.parent = gameObject.transform;
     }
 }
