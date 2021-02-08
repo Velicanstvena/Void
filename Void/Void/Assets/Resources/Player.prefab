@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 1027979122557172030}
   - component: {fileID: 1027979122557172039}
   - component: {fileID: 1027979122557171996}
+  - component: {fileID: 114821766096474956}
+  - component: {fileID: 114460615600461734}
   - component: {fileID: 1027979122557171997}
   m_Layer: 0
   m_Name: Player
@@ -20,7 +22,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1027979122557172046
 Transform:
   m_ObjectHideFlags: 0
@@ -114,7 +116,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a965fae845936fc4b8888e799ef94f56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeBombButton: {fileID: 0}
+  pv: {fileID: 1027979122557171997}
+--- !u!114 &114821766096474956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027979122557172056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 228e1c425d0d1e448b7b4496e5c4cb9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pv: {fileID: 1027979122557171997}
+  heartPickedParticle: {fileID: 100004, guid: 3af6f68141914ca43ba39b2403757bd0, type: 3}
+--- !u!114 &114460615600461734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027979122557172056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3b89d07101114b40b3567c424847847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   pv: {fileID: 1027979122557171997}
 --- !u!114 &1027979122557171997
 MonoBehaviour:

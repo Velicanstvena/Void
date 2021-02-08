@@ -121,7 +121,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlaced: 0
-  pv: {fileID: 114899941858817788}
+  bombExplosionParticle: {fileID: 1892078723244562, guid: 46876a2780737ec45a19d62f88e5ce56,
+    type: 3}
 --- !u!114 &114899941858817788
 MonoBehaviour:
   m_ObjectHideFlags: 0

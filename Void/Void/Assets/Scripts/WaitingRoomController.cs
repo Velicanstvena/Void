@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 using System;
 
 public class WaitingRoomController : MonoBehaviourPunCallbacks
@@ -16,8 +17,8 @@ public class WaitingRoomController : MonoBehaviourPunCallbacks
     private int roomSize;
     [SerializeField] private int minPlayersToStart;
 
-    [SerializeField] private Text playerCountDisplay;
-    [SerializeField] private Text countdownDisplay;
+    [SerializeField] private TextMeshProUGUI playerCountDisplay;
+    [SerializeField] private TextMeshProUGUI countdownDisplay;
 
     private bool readyToCountdown;
     private bool readyToStart;
@@ -30,7 +31,6 @@ public class WaitingRoomController : MonoBehaviourPunCallbacks
     [SerializeField] private float maxWaitTime;
     [SerializeField] private float maxFullGameWaitTime;
     
-    // Start is called before the first frame update
     void Start()
     {
         myPhotonView = GetComponent<PhotonView>();
@@ -45,7 +45,7 @@ public class WaitingRoomController : MonoBehaviourPunCallbacks
     {
         playerCount = PhotonNetwork.PlayerList.Length;
         roomSize = PhotonNetwork.CurrentRoom.MaxPlayers;
-        playerCountDisplay.text = playerCount + " : " + roomSize;
+        playerCountDisplay.text = playerCount + " of " + roomSize;
 
         if (playerCount == roomSize)
         {

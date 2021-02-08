@@ -4,10 +4,10 @@ using UnityEngine;
 public class Bomb : MonoBehaviour
 {
     public bool isPlaced = false;
-
     private Vector2 overlapBoxSize1 = new Vector2(6f, 1f);
     private Vector2 overlapBoxSize2 = new Vector2(1f, 11f);
     private Collider2D[] colliders;
+    [SerializeField] GameObject bombExplosionParticle;
 
     private void Update()
     {
@@ -35,6 +35,8 @@ public class Bomb : MonoBehaviour
 
     public void BombExplosion()
     {
+        GameObject particle = Instantiate(bombExplosionParticle, gameObject.transform.position, Quaternion.identity);
+        Destroy(particle, 2);
         FindAffectedPlatforms(overlapBoxSize1);
         FindAffectedPlatforms(overlapBoxSize2);
     }

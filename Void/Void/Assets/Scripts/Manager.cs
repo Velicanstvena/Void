@@ -11,11 +11,11 @@ public class Manager : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0f, 0f, 0f), playerPrefab.transform.rotation);
+            SpawnPlayer(new Vector3(0f, 0f, 0f));
         }
         else if (!PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(6f, 0f, 0f), playerPrefab.transform.rotation);
+            SpawnPlayer(new Vector3(6f, 0f, 0f));
         }
     }
 
