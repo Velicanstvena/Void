@@ -225,6 +225,11 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
                 fallDistance += lastPosY - gameObject.transform.position.y;
             }
 
+            if (gameObject.transform.position.y < -0.1)
+            {
+                fallDistance -= lastPosY - gameObject.transform.position.y;
+            }
+
             lastPosY = gameObject.transform.position.y;
         }
     }
@@ -263,7 +268,7 @@ public class PlayerMovement : MonoBehaviourPun, IPunObservable
             gameController.Die();
         }
 
-        if (broken && fallDistance > 4)
+        if (broken && fallDistance > 0.1)
         {
             gameController.Die();
             broken = false;
